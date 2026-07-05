@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv
 from groq import Groq
+from prompts import create_prompt
 
 #loading the environment variables
 load_dotenv()
@@ -83,3 +84,7 @@ answer = ask_groq(prompt)
 
 #print the response of the prompt
 print(answer)
+
+from config import *
+
+print(DEFAULT_SERVICE)
