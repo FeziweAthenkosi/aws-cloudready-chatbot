@@ -7,6 +7,13 @@ This module builds prompts that are sent to Groq.
 Each quiz type has its own prompt builder.
 =========================================================
 """
+from validators import (
+    validate_quiz_type,
+    validate_category,
+    validate_service,
+    validate_difficulty,
+    validate_question_count
+)
 
 def build_service_quiz_prompt(
     category,
@@ -122,10 +129,21 @@ def build_prompt(
     question_count=5
 ):
     """
-    Routes the request to the correct prompt builder.
+    Validate the request and route it
+    to the appropriate prompt builder.
     """
 
+    # Validate inputs common to all quiz types
+    validate_quiz_type(quiz_type)
+    validate_difficulty(difficulty)
+    validate_question_count(question_count)
+
+    # Service Quiz
     if quiz_type == "Service Quiz":
+
+        validate_category(category)
+        validate_service(category, service)
+
         return build_service_quiz_prompt(
             category,
             service,
@@ -133,14 +151,20 @@ def build_prompt(
             question_count
         )
 
+    # Category Quiz
     elif quiz_type == "Category Quiz":
+
+        validate_category(category)
+
         return build_category_quiz_prompt(
             category,
             difficulty,
             question_count
         )
 
+    # Mock Exam
     elif quiz_type == "Mock Exam":
+
         return build_mock_exam_prompt(
             difficulty,
             question_count
@@ -148,4 +172,3 @@ def build_prompt(
 
     else:
         raise ValueError(f"Unknown quiz type: {quiz_type}")
-    
